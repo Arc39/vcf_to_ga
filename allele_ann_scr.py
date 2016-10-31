@@ -57,16 +57,16 @@ def TranscEff(ann):
     return tEff"""
 
 #this function creates variant annotation message object
-def VarAnnMes(variant_record, gaVariant_id):
+def VarAnnMes(variant_record):
     vAnMes = allele_annotations_pb2.VariantAnnotation()
     ranId = uuid.uuid4()
     vAnMes.id = str(ranId)
-    vAnMes.variant_id = gaVariant_id
+    #vAnMes.variant_id = gaVariant_id
     vAnMes.variant_annotation_set_id = var_ann_set_id
-    vAnMes.created = int(time.time())
-    for ann in rec.info["ANN"]: #going to turn into function and send Type[x] 
+    #vAnMes.created = int(time.time())
+    for ann in variant_record.info["ANN"]: #going to turn into function and send Type[x] 
         Type = ann.split("|")
-        """allele = Type[0]
+        allele = Type[0]
         annotation = Type[1]
         ann_impact = Type[2]
         Gene_Name = Type[3]
@@ -81,10 +81,10 @@ def VarAnnMes(variant_record, gaVariant_id):
         CDS = Type[12]
         AA = Type[13]
         Distance = Type[14]
-        EWI = Type[15]"""
+        EWI = Type[15]
     #vAnMes.info
-        print Type
-    return alleleLoc(allele), hgvsAnn(HGVSc, HGVSp)
+        print Type, allele, annotation
+    #return alleleLoc(allele), hgvsAnn(HGVSc, HGVSp)
 
 #sets command line input file 
 parser = argparse.ArgumentParser()
@@ -97,4 +97,4 @@ hdr = vcfFile.header
 var_ann_set_id = str(uuid.uuid4())
 
 for variant_record in vcfFile.fetch():
-    VarAnnMes(variant_record, gaVariant.id)
+    VarAnnMes(variant_record)#, gaVariant.id)
