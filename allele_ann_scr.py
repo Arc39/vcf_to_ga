@@ -12,22 +12,22 @@ import uuid
 import google.protobuf.struct_pb2 as struct_pb2
 import argparse
 
-"""#This function creates analysis result object
-def AnalysisRes():
+#This function creates analysis result object
+"""def AnalysisRes():
     aRes = allele_annotations_pb2.AnalysisResult()
     aRes.analysis_id
     aRes.result
-    aRes.score
+    aRes.score"""
 
 #this function creates allele location object
-def alleleLoc():
+def alleleLoc(allele):
     aLoc = allele_annotations_pb2.AlleleLocation()
     aLoc.start
     aLoc.end
     aLoc.reference_sequence
     aLoc.alternate_sequence
 
-#this function creates variant annotation set object
+"""#this function creates variant annotation set object
 def VarAnnSet(gaVariantVS_id):
     vAnSet = allele_annotations_pb2.VariantAnnotationSet()
     vAnSet.id = var_ann_set_id
@@ -41,17 +41,18 @@ def hgvsAnn(hgvsc,hgvsp):
     hgvs.genomic
     hgvs.transcript
     hgvs.protein
-    return hgvs
+    return hgvs"""
 
 #This function creates transcript effect object
-def TranscEff(ann):
+"""def TranscEff():
     tEff = allele_annotations_pb2.TranscriptEffect()
     tEff.id =
     tEff.feature_id =
     tEff.alternate_bases =
     (repeatd OntologyTerm) tEff.effects =
     tEff.hgvs_annotation.extend(hgvsAnn()) =
-    tEff.cdna_location =
+    tEff.cdna_location = cDNA
+    tEff.cds_location = CDS
     tEff.protein_location =
     tEff.analysis_result.extend(AnalysisRes()) =
     return tEff"""
@@ -61,10 +62,10 @@ def VarAnnMes(variant_record):
     vAnMes = allele_annotations_pb2.VariantAnnotation()
     ranId = uuid.uuid4()
     vAnMes.id = str(ranId)
-    #vAnMes.variant_id = gaVariant_id
+    vAnMes.variant_id = variant_record.id
     vAnMes.variant_annotation_set_id = var_ann_set_id
     #vAnMes.created = int(time.time())
-    for ann in variant_record.info["ANN"]: #going to turn into function and send Type[x] 
+    for ann in variant_record.info["ANN"]: 
         Type = ann.split("|")
         allele = Type[0]
         annotation = Type[1]
@@ -82,9 +83,24 @@ def VarAnnMes(variant_record):
         AA = Type[13]
         Distance = Type[14]
         EWI = Type[15]
+    
+    """for nmd in variant_record.info["NMD"]:
+        Type2 = nmd.split("|")
+        Gene_Name2 = Type2[0]
+        Gene_ID2 = Type2[1]
+        Number_of_transcripts_in_gene = Type2[2]
+        Percent_of_transcripts_affected = Type2[3]"""
+    
+    """for lof in variant_record.info["LOF"]:
+        Type3 = nmd.split("|")
+        lof.Gene_Name = Type3[0]
+        lof.Gene_ID = Type3[1]
+        lof.Number_of_transcripts_in_gene = Type3[2]
+        lof.Percent_of_transcripts_affected = Type3[3]
+        print lof.Gene_Name"""
     #vAnMes.info
-        print Type, allele, annotation
-    #return alleleLoc(allele), hgvsAnn(HGVSc, HGVSp)
+        
+    return alleleLoc(allele)
 
 #sets command line input file 
 parser = argparse.ArgumentParser()
@@ -96,5 +112,10 @@ vcfFile = pysam.VariantFile(p.input)
 hdr = vcfFile.header
 var_ann_set_id = str(uuid.uuid4())
 
-for variant_record in vcfFile.fetch():
-    VarAnnMes(variant_record)#, gaVariant.id)
+"""for variant_record in vcfFile.fetch():
+    VarAnnMes(variant_record) #gaVariant.id)"""
+for x in hdr:
+    print x.key
+print list(hdr.info)
+print list(hdr.contigs)
+print list(hdr.filters)
