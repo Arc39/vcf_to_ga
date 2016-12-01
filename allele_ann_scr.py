@@ -55,17 +55,18 @@ def hgvsAnn(hgvsc,hgvsp):
         #to_splitg = split(hgvs.genomic)"""
 
 #This function creates transcript effect object
-"""def TranscEff():
+def TranscEff(transcript_effect):
     tEff = allele_annotations_pb2.TranscriptEffect()
-    tEff.id =
-    tEff.feature_id =
-    tEff.alternate_bases =
-    (repeatd OntologyTerm) tEff.effects =
-    tEff.hgvs_annotation.extend(hgvsAnn()) =
-    tEff.cdna_location = cDNA
-    tEff.cds_location = CDS
-    tEff.protein_location =
-    tEff.analysis_result.extend(AnalysisRes()) ="""
+    tEff.id = transcript_effect
+
+    #tEff.feature_id =
+    #tEff.alternate_bases =
+    #(repeatd OntologyTerm) tEff.effects =
+    #tEff.hgvs_annotation.extend(hgvsAnn()) =
+    #tEff.cdna_location = cDNA
+    #tEff.cds_location = CDS
+    #tEff.protein_location =
+    #tEff.analysis_result.extend(AnalysisRes()) =
 
 
 #this function creates variant annotation message object
@@ -75,8 +76,6 @@ def VarAnnMes(variant_record):
     vAnMes.id = str(ranId)
     vAnMes.variant_id = variant_record.id
     vAnMes.variant_annotation_set_id = var_ann_set_id
-    #vAnMes.transcript_effects = 
-    #print vAnMes.transcript_effects
     #vAnMes.created = int(time.time())
     for ann in variant_record.info["ANN"]: 
         Type = ann.split("|")
@@ -97,17 +96,20 @@ def VarAnnMes(variant_record):
         Distance = Type[14]
         EWI = Type[15]
         hgvsAnn(HGVSc,HGVSp)
-    
+        for TranscriptEffect in ann:
+            TranscEff(TranscriptEffect)
+            #vAnMes.transcript_effects.extend(TranscriptEffect)
 
-#sets command line input file 
-parser = argparse.ArgumentParser()
-parser.add_argument("-i", "--input", help="Input file")
-p = parser.parse_args()
-assert p.input
+if __name__ == '__main__':
+    #sets command line input file 
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--input", help="Input file")
+    p = parser.parse_args()
+    assert p.input
 
-vcfFile = pysam.VariantFile(p.input)
-hdr = vcfFile.header
-var_ann_set_id = str(uuid.uuid4())
+    vcfFile = pysam.VariantFile(p.input)
+    hdr = vcfFile.header
+    var_ann_set_id = str(uuid.uuid4())
 
-for variant_record in vcfFile.fetch():
-    VarAnnMes(variant_record)
+    for variant_record in vcfFile.fetch():
+        VarAnnMes(variant_record)
